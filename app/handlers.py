@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart
 import app.keyboards as kb
-from app.database.requests import set_user, get_item
+from app.database.requests import set_user
 
 router = Router()
 
@@ -29,13 +29,18 @@ async def catalog(callback: CallbackQuery):
 
 @router.callback_query(F.data.startswith('category_'))
 async def category(callback: CallbackQuery):
+    category_id = callback.data.split('_')[1]
     await callback.answer('')
     await callback.message.edit_text('Выберите товар по категории',
-                                     reply_markup=await kb.get_items_by_categories(callback.data.split('_'[1])))
+                                     reply_markup=await kb.items(category_id))
 
 
 @router.callback_query(F.data.startswith('item_'))
 async def item_handler(callback: CallbackQuery):
-    item = get_item(callback.data.split('_'[1]))
+    item_id = callback.data.split('_')[1]
+    item = await kb.get_item(item_id)
     await callback.answer('')
-    await callback.message.edit_text(f'{item.name}\n\n{item.description}\n\nЦена: {item.price}', reply_markup=await kb.back_to_category(item.category))
+    await callback.message.edit_text(
+        f'{item.name}\n\n{item.description}\n\nЦена: {item.price}',
+        reply_markup=kb.back_to_category(item.category)
+    )
