@@ -25,3 +25,11 @@ async def get_items_by_categories(category_id):
 async def get_item(item_id):
     async with async_session() as session:
         return await session.scalar(select(Item).where(Item.id == item_id))
+
+
+async def get_cart():
+    pass
+
+
+async def set_cart(user_id: int, item_id: int, quantity: int = 1):
+    pass

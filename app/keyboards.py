@@ -37,9 +37,12 @@ async def items(category_id):
     return keyboard.as_markup()
 
 
-def back_to_category(category_id):
+async def item_menu(category_id, item_id):
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
             text='Назад', callback_data=f'category_{category_id}'
+        )],
+        [InlineKeyboardButton(
+            text='Заказать', callback_data=f'order_item_{item_id}'
         )]
     ])
